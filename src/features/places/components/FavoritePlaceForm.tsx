@@ -1,47 +1,46 @@
 // src/features/places/components/FavoritePlaceForm.tsx
 import { useState } from 'react';
-import type { FavoritePlace } from '../hooks/useFavoritePlaces';
+import type { Place } from '../types/place.types';
 
-interface FavoritePlaceFormProps {
-  place?: FavoritePlace | null;
+interface Props {
+  place?: Place | null;
   onCancel: () => void;
-  onSave: (place: FavoritePlace) => void;
+  onSave: (place: Place) => void;
 }
 
-export const FavoritePlaceForm = ({ place, onCancel, onSave }: FavoritePlaceFormProps) => {
+export const FavoritePlaceForm = ({ place, onCancel, onSave }: Props) => {
   const [name, setName] = useState(place?.name || '');
-  const [lat, setLat] = useState(place?.coordinates.lat || 0);
-  const [lng, setLng] = useState(place?.coordinates.lng || 0);
+  const [lat, setLat] = useState(place?.coordinates?.lat || 0);
+  const [lng, setLng] = useState(place?.coordinates?.lng || 0);
 
   const handleSubmit = () => {
-    const newPlace: FavoritePlace = {
+    onSave({
       id: place?.id || Date.now().toString(),
-      userId: place?.userId || 'unknown',
       name,
       coordinates: { lat, lng },
-      status: 'active',
-      createdAt: place?.createdAt || new Date().toISOString()
-    };
-    onSave(newPlace);
+      status: place?.status || 'active',
+      createdAt: place?.createdAt || new Date().toISOString(),
+      userId: place?.userId || 'admin'
+    });
   };
 
   return (
     <div className="p-4 space-y-4">
       <h2 className="text-lg font-semibold">{place ? 'Editar' : 'Nuevo'} Lugar Favorito</h2>
 
-      <div className="space-y-2">
+      <div>
         <label>Nombre</label>
-        <input value={name} onChange={e => setName(e.target.value)} className="border px-2 py-1 rounded w-full" />
+        <input value={name} onChange={(e) => setName(e.target.value)} className="border px-2 py-1 rounded w-full" />
       </div>
 
-      <div className="space-y-2">
+      <div>
         <label>Latitud</label>
-        <input type="number" value={lat} onChange={e => setLat(parseFloat(e.target.value))} className="border px-2 py-1 rounded w-full" />
+        <input type="number" value={lat} onChange={(e) => setLat(parseFloat(e.target.value))} className="border px-2 py-1 rounded w-full" />
       </div>
 
-      <div className="space-y-2">
+      <div>
         <label>Longitud</label>
-        <input type="number" value={lng} onChange={e => setLng(parseFloat(e.target.value))} className="border px-2 py-1 rounded w-full" />
+        <input type="number" value={lng} onChange={(e) => setLng(parseFloat(e.target.value))} className="border px-2 py-1 rounded w-full" />
       </div>
 
       <div className="flex gap-2">
