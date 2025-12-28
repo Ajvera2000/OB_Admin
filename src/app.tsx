@@ -10,13 +10,24 @@ import { UserDetailScreen } from "./features/users/screens/UserDetailScreen";
 import { UserFormScreen } from "./features/users/screens/UserFormScreen";
 import type { User } from './features/users/types/user.types';
 
+// Places
+import { SafeZonesScreen } from './features/places/screens/SafeZonesScreen';
+import { CriticalPointsScreen } from './features/places/screens/CriticalPointsScreen';
+import { FavoritePlacesScreen } from './features/places/screens/FavoritePlacesScreen';
+import type { SafeZone } from './features/places/types/place.types';
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState<
-    "users" | "user-detail" | "user-form" | "id-card" | "notifications"
+    "users" | "user-detail" | "user-form" | "id-card" | "notifications" | "safe-zones" | "critical-points" | "favorite-places"
   >("users");
 
+  // Usuarios
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  // SafeZones
+  const [safeZones, setSafeZones] = useState<SafeZone[]>([]);
+  const [selectedSafeZone, setSelectedSafeZone] = useState<SafeZone | null>(null);
 
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col">
@@ -40,6 +51,24 @@ function App() {
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
                   ${currentScreen === "users" ? "bg-white text-primary-700 shadow-sm" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"}`}>
                 <span className="flex items-center gap-2">👥 Usuarios</span>
+              </button>
+
+              <button onClick={() => setCurrentScreen("safe-zones")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
+                  ${currentScreen === "safe-zones" ? "bg-white text-primary-700 shadow-sm" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"}`}>
+                <span className="flex items-center gap-2">🛡️ Zonas Seguras</span>
+              </button>
+
+              <button onClick={() => setCurrentScreen("critical-points")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
+                  ${currentScreen === "critical-points" ? "bg-white text-primary-700 shadow-sm" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"}`}>
+                <span className="flex items-center gap-2">⚠️ Puntos Críticos</span>
+              </button>
+
+              <button onClick={() => setCurrentScreen("favorite-places")}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
+                  ${currentScreen === "favorite-places" ? "bg-white text-primary-700 shadow-sm" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"}`}>
+                <span className="flex items-center gap-2">⭐ Lugares Favoritos</span>
               </button>
 
               <button onClick={() => setCurrentScreen("id-card")}
@@ -77,6 +106,9 @@ function App() {
               {currentScreen === "users" && "Gestión de Usuarios"}
               {currentScreen === "user-detail" && "Detalle de Usuario"}
               {currentScreen === "user-form" && (editingUser ? "Editar Usuario" : "Crear Usuario")}
+              {currentScreen === "safe-zones" && "Zonas Seguras"}
+              {currentScreen === "critical-points" && "Puntos Críticos"}
+              {currentScreen === "favorite-places" && "Lugares Favoritos"}
               {currentScreen === "id-card" && "Tarjeta de Identificación"}
               {currentScreen === "notifications" && "Notificaciones"}
             </span>
@@ -107,10 +139,7 @@ function App() {
           <UserFormScreen
             user={editingUser}
             onCancel={() => setCurrentScreen("users")}
-            onSave={(user: User) => {
-              // Aquí se puede actualizar el backend o el estado global
-              setCurrentScreen("users");
-            }}
+            onSave={(user: User) => setCurrentScreen("users")}
           />
         )}
 
@@ -121,6 +150,9 @@ function App() {
           />
         )}
 
+        {currentScreen === "safe-zones" && <SafeZonesScreen />}
+        {currentScreen === "critical-points" && <CriticalPointsScreen />}
+        {currentScreen === "favorite-places" && <FavoritePlacesScreen />}
         {currentScreen === "id-card" && <IDCardConfigScreen />}
         {currentScreen === "notifications" && <NotificationsConfigScreen />}
       </main>
